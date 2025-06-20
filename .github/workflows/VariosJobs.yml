@@ -1,0 +1,44 @@
+name: Cache
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Set cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+          restore-key: |
+            ${{ runner.os }}-node-modules-
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Run test
+        run: npm run test
+      
+      - name: Build page
+        run: npm run build
+
+
+  notificacion:
+    needs: Cache
+    runs-on: ubuntu-latest
+    #if: condiciona la ejecucion de este job
+    if: always() # always(),siempre  success(),cuando el anterior es exitoso   failure(), cuando el anterior falla
+
+    steps:
+      - name: Mensaje
+        run: echo "Este job siempre se ejecutara sin importar los demas"
