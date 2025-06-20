@@ -34,7 +34,7 @@ jobs:
 
 
   notificacion:
-    needs: Cache
+    needs: build
     runs-on: ubuntu-latest
     #if: condiciona la ejecucion de este job
     if: always() # always(),siempre  success(),cuando el anterior es exitoso   failure(), cuando el anterior falla
